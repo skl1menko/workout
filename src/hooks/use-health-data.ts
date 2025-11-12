@@ -8,7 +8,7 @@ import {
     requestPermissions
 } from '@/src/services';
 import { HealthDataHookResult, HealthValue, Workout } from '@/src/types';
-import { getEndOfDay, getStartOfDay } from '@/src/utils';
+import { getEndOfDay, getStartOfDay, logger } from '@/src/utils';
 import { useState } from 'react';
 import { HealthInputOptions } from 'react-native-health';
 
@@ -38,7 +38,7 @@ export const useHealthData = (date: Date): HealthDataHookResult => {
 
     try {
       // Сначала пытаемся запросить разрешения
-      console.log('Requesting HealthKit permissions...');
+      logger.info('Requesting HealthKit permissions');
       await requestPermissions();
       
       // После показа диалога считаем что разрешения есть
@@ -55,17 +55,19 @@ export const useHealthData = (date: Date): HealthDataHookResult => {
         endDate: getEndOfDay(date).toISOString(),
       };
 
-      console.log('Fetching health data with options:', options);
+      logger.debug('Fetching health data', { 
+        date: date.toLocaleDateString() 
+      });
 
       // Загружаем все данные
       const data = await getAllHealthData(options);
 
-      console.log('Health data received:', {
+      logger.success('Health data retrieved', {
         steps: data.steps,
         calories: data.calories,
-        heartRateCount: data.heartRate.length,
-        sleepCount: data.sleep.length,
-        workoutsCount: data.workouts.length,
+        heartRate: data.heartRate.length,
+        sleep: data.sleep.length,
+        workouts: data.workouts.length,
       });
 
       setSteps(data.steps);
@@ -76,7 +78,7 @@ export const useHealthData = (date: Date): HealthDataHookResult => {
       setSuccess(true);
       setDataTimestamp(new Date().toISOString());
     } catch (err: any) {
-      console.error('Error in triggerFetch:', err);
+      logger.error('Failed to fetch health data', err.message);
       setError(err.message || 'Failed to fetch health data');
     }
   };

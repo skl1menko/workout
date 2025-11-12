@@ -3,6 +3,7 @@
  * Инкапсулирует всю логику взаимодействия с нативным модулем
  */
 
+import { logger } from '@/src/utils';
 import { NativeModules, Platform } from 'react-native';
 import AppleHealthKit, {
     HealthInputOptions,
@@ -39,12 +40,11 @@ const permissions: HealthKitPermissions = {
  */
 export const isHealthKitAvailable = (): boolean => {
   if (Platform.OS !== 'ios') {
-    console.warn('HealthKit is only available on iOS');
+    logger.warn('HealthKit is only available on iOS');
     return false;
   }
   if (!RCTAppleHealthKit) {
-    console.error('Native HealthKit module not available');
-    console.log('Available NativeModules:', Object.keys(NativeModules));
+    logger.error('HealthKit module not available');
     return false;
   }
   return true;
@@ -64,12 +64,10 @@ export const checkPermissions = (): Promise<boolean> => {
       permissions,
       (err: string, results: any) => {
         if (err) {
-          console.error('Error checking permissions:', err);
+          logger.error('Permission check failed', err);
           reject(new Error(`Error checking permissions: ${err}`));
           return;
         }
-
-        console.log('Auth status results:', results);
 
         const readPermissions = permissions.permissions.read;
         
@@ -79,8 +77,7 @@ export const checkPermissions = (): Promise<boolean> => {
           (perm) => results[perm] === 2
         );
 
-        console.log('Has any permission:', hasAnyPermission);
-        console.log('Permission details:', readPermissions.map(p => `${p}: ${results[p]}`));
+        logger.debug('Permissions status', { hasAnyPermission, results });
 
         // Считаем, что разрешения есть, если хотя бы одно выдано
         resolve(hasAnyPermission);
@@ -147,8 +144,7 @@ export const getCalories = (options: HealthInputOptions): Promise<number> => {
           return;
         }
         const total = results.reduce((sum, sample) => sum + sample.value, 0);
-        console.log('Active calories:', total);
-        console.log('Calories samples count:', results.length);
+        logger.info('Calories retrieved', { total, samples: results.length });
         resolve(total);
       }
     );
@@ -221,12 +217,11 @@ export const getWorkouts = (options: HealthInputOptions): Promise<any[]> => {
       endDate: options.endDate || new Date().toISOString(),
     };
 
-    console.log('Fetching workouts with options:', workoutOptions);
-    console.log('Available RCTAppleHealthKit methods:', Object.keys(RCTAppleHealthKit || {}));
+    logger.debug('Fetching workouts', workoutOptions);
 
     // Используем нативный метод напрямую
     if (!RCTAppleHealthKit) {
-      console.error('RCTAppleHealthKit module not available');
+      logger.error('RCTAppleHealthKit module not available');
       resolve([]);
       return;
     }
@@ -241,7 +236,13 @@ export const getWorkouts = (options: HealthInputOptions): Promise<any[]> => {
 
     const availableMethod = possibleMethods.find(method => typeof RCTAppleHealthKit[method] === 'function');
     
-    console.log('Available workout method:', availableMethod);
+    if (!availableMethod) {
+      logger.error('Workout fetch method not found');
+      resolve([]);
+      return;
+    }
+
+    logger.debug('Using method', availableMethod);
 
     if (availableMethod === 'getSamples') {
       const requestOptions = {
@@ -249,29 +250,28 @@ export const getWorkouts = (options: HealthInputOptions): Promise<any[]> => {
         type: 'Workout',
         limit: 100,
       };
-      console.log('Requesting workouts with:', JSON.stringify(requestOptions, null, 2));
       
       RCTAppleHealthKit.getSamples(
         requestOptions,
         (err: any, results: any[]) => {
           if (err) {
-            console.error('Error fetching workouts:', err);
+            logger.error('Failed to fetch workouts', err);
             resolve([]);
             return;
           }
-          console.log('Workouts received:', results?.length || 0);
-          if (results && results.length > 0) {
-            console.log('First workout sample:', JSON.stringify(results[0], null, 2));
-            console.log('Last workout sample:', JSON.stringify(results[results.length - 1], null, 2));
+          
+          const workoutsCount = results?.length || 0;
+          if (workoutsCount > 0) {
+            logger.success('Workouts retrieved', { count: workoutsCount });
           } else {
-            console.log('No workouts found for this period');
+            logger.info('No workouts found for this period');
           }
+          
           resolve(results || []);
         }
       );
     } else {
-      console.error('No suitable method found for fetching workouts');
-      console.log('Please check react-native-health documentation');
+      logger.error('getSamples method not available');
       resolve([]);
     }
   });

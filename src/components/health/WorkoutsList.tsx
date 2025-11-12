@@ -4,6 +4,7 @@
 
 import { BorderRadius, ColorScheme, FontSizes, FontWeights, Spacing } from '@/src/styles';
 import { Workout } from '@/src/types';
+import { logger } from '@/src/utils';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -12,7 +13,7 @@ interface WorkoutsListProps {
 }
 
 export const WorkoutsList: React.FC<WorkoutsListProps> = ({ workouts }) => {
-  console.log('WorkoutsList received workouts:', workouts);
+  logger.debug('Rendering workouts', { count: workouts.length });
 
   if (workouts.length === 0) {
     return (

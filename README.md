@@ -1,50 +1,170 @@
-# Welcome to your Expo app 👋
+# 💪 Workout App - Health & Fitness Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Мобильное приложение для отслеживания здоровья и фитнеса, интегрированное с Apple HealthKit.
 
-## Get started
+## � Возможности
 
-1. Install dependencies
+- ✅ Отслеживание шагов
+- ✅ Подсчёт сожжённых калорий
+- ✅ Мониторинг сердечного ритма
+- ✅ Анализ сна
+- ✅ Навигация по датам
+- ✅ Интеграция с Apple Health
 
-   ```bash
-   npm install
-   ```
+## 🏗️ Архитектура проекта
 
-2. Start the app
+Проект организован по модульному принципу для лучшей масштабируемости и поддержки:
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+src/
+├── components/     # Переиспользуемые компоненты
+├── screens/        # Экраны приложения
+├── services/       # Бизнес-логика и API
+├── hooks/          # React хуки
+├── types/          # TypeScript типы
+├── styles/         # Дизайн-система
+└── utils/          # Вспомогательные функции
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+📚 **Подробная документация:**
+- [Архитектура проекта](./ARCHITECTURE.md) - визуализация структуры
+- [Структура src/](./src/README.md) - документация модулей
+- [Краткая справка](./QUICK_REFERENCE.md) - быстрое руководство
+- [История изменений](./CHANGELOG.md) - лог изменений
 
-## Learn more
+## 🚀 Быстрый старт
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. Установка зависимостей
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npm install
+```
 
-## Join the community
+### 2. Запуск приложения
 
-Join our community of developers creating universal apps.
+```bash
+npm start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### 3. Выбор платформы
+
+- **iOS симулятор**: нажмите `i`
+- **Android эмулятор**: нажмите `a`
+- **Веб**: нажмите `w`
+
+## 📋 Доступные команды
+
+```bash
+# Запуск в режиме разработки
+npm start
+
+# Запуск на iOS
+npm run ios
+
+# Запуск на Android
+npm run android
+
+# Запуск в веб-браузере
+npm run web
+
+# Проверка кода (линтер)
+npm run lint
+```
+
+## 🛠️ Технологии
+
+- **React Native** - мобильная разработка
+- **Expo** - инструменты разработки
+- **TypeScript** - типизация
+- **Expo Router** - навигация
+- **Apple HealthKit** - данные о здоровье
+
+## 📱 Требования
+
+- **iOS**: iPhone с iOS 13.0+
+- **Xcode**: версия 12.0+
+- **Node.js**: версия 18+
+- **npm**: версия 9+
+
+## 🎨 Структура компонентов
+
+### UI Компоненты
+- `Button` - универсальная кнопка
+- `HealthCard` - карточка метрики
+- `DateNavigator` - навигация по датам
+- `ErrorMessage` - сообщение об ошибке
+- `LoadingIndicator` - индикатор загрузки
+
+### Экраны
+- `HomeScreen` - главный экран
+- `HealthScreen` - панель здоровья
+
+## 🔧 Разработка
+
+### Добавление нового экрана
+
+```typescript
+// src/screens/MyScreen.tsx
+export const MyScreen: React.FC = () => {
+  return <View>...</View>;
+};
+```
+
+### Создание компонента
+
+```typescript
+// src/components/ui/MyComponent.tsx
+export const MyComponent: React.FC<Props> = (props) => {
+  return <View>...</View>;
+};
+```
+
+### Использование стилей
+
+```typescript
+import { ColorScheme, Spacing, FontSizes } from '@/src/styles';
+
+const styles = StyleSheet.create({
+  container: {
+    padding: Spacing.lg,
+    backgroundColor: ColorScheme.primary,
+  },
+});
+```
+
+## 📖 Документация
+
+Проект содержит подробную документацию:
+
+1. **[ARCHITECTURE.md](./ARCHITECTURE.md)** - общая архитектура проекта
+2. **[src/README.md](./src/README.md)** - структура исходного кода
+3. **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** - быстрая справка
+4. **[CHANGELOG.md](./CHANGELOG.md)** - история изменений
+
+## 🎯 Планы развития
+
+- [ ] Добавить графики и визуализацию данных
+- [ ] Реализовать тёмную тему
+- [ ] Добавить профиль пользователя
+- [ ] Создать экран тренировок
+- [ ] Добавить уведомления
+- [ ] Реализовать офлайн режим
+
+## 🤝 Вклад в проект
+
+Этот проект создан с использованием [Expo](https://expo.dev).
+
+## 📄 Лицензия
+
+Этот проект создан для образовательных целей.
+
+## 🔗 Полезные ссылки
+
+- [Expo документация](https://docs.expo.dev/)
+- [React Native документация](https://reactnative.dev/)
+- [HealthKit документация](https://developer.apple.com/documentation/healthkit)
+- [Expo Router](https://docs.expo.dev/router/introduction/)
+
+---
+
+**Создано с ❤️ с использованием Expo и React Native**
